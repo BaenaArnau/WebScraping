@@ -33,6 +33,7 @@ public class Main {
             String descripcion = "";
             int historiasRelacionada;
             List<String> nombreCampeones = new ArrayList<>();
+            List<WebElement> elements;
 
             driver.get(href);
             Thread.sleep(5000);
@@ -41,19 +42,35 @@ public class Main {
             nombre = element.getText();
 
             element = driver.findElement(By.className("description_1-6k"));
-            List<WebElement> elements = element.findElements(By.tagName("p"));
+            if (nombre.equalsIgnoreCase("zaun") | nombre.equalsIgnoreCase("piltover") | nombre.equalsIgnoreCase("TARGON")){
+                descripcion = element.getText();
 
-            for (WebElement elemetoss : elements) {
-                descripcion += elemetoss.getText() + "\n";
+            }else {
+                elements = element.findElements(By.tagName("p"));
+                for (WebElement elemetoss : elements) {
+
+                    descripcion += elemetoss.getText() + "\n";
+                }
             }
 
-            elements = driver.findElements(By.className(".QCard_hextech_root_a9df.QCard_hextech_clickable_275e.item_3MaG"));
+            elementos = driver.findElements(By.className("item_30l8"));
+
+            for (WebElement elemetoss : elementos) {
+                String textoH1 = elemetoss.getAttribute("href");
+                nombreCampeones.add(textoH1);
+            }
+
+            elements = driver.findElements(By.className("item_3MaG"));
             historiasRelacionada = elements.size();
 
             System.out.println("Nombre: " + nombre);
             System.out.println("Descripción: " + descripcion);
             System.out.println("Número de historias relacionadas: " + historiasRelacionada);
-            System.out.println("Nombres de campeones: " + Arrays.toString(nombreCampeones.toArray()));
+            if (!nombreCampeones.isEmpty()) {
+                System.out.println("Nombres de campeones: " + Arrays.toString(nombreCampeones.toArray()));
+            } else {
+                System.out.println("La lista de campeones está vacía.");
+            }
         }
 
         driver.quit(); // Mueve esta línea fuera del bucle for
