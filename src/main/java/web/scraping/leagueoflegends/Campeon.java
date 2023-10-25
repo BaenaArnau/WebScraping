@@ -6,14 +6,14 @@ public class Campeon {
     private String apodo;
     private List<Campeon> campeonesConRelacion;
     private String biografia;
-    private int aparicionEnCinematicas;
+    private boolean aparicionEnCinematicas;
     private int numRelatosCortos;
     private String rol;
     private String raza;
     private List<Habilidad> habilidades;
     private List<String> nombreDeAspectos;
 
-    public Campeon(String nombre, String apodo, List<Campeon> campeonesConRelacion, String biografia, int aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, List<Habilidad> habilidades, List<String> nombreDeAspectos) {
+    public Campeon(String nombre, String apodo, List<Campeon> campeonesConRelacion, String biografia, boolean aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, List<Habilidad> habilidades, List<String> nombreDeAspectos) {
         this.nombre = nombre;
         this.apodo = apodo;
         this.campeonesConRelacion = campeonesConRelacion;
@@ -58,11 +58,11 @@ public class Campeon {
         this.biografia = biografia;
     }
 
-    public int getAparicionEnCinematicas() {
+    public boolean getAparicionEnCinematicas() {
         return aparicionEnCinematicas;
     }
 
-    public void setAparicionEnCinematicas(int aparicionEnCinematicas) {
+    public void setAparicionEnCinematicas(boolean aparicionEnCinematicas) {
         this.aparicionEnCinematicas = aparicionEnCinematicas;
     }
 

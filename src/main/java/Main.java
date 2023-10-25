@@ -32,7 +32,6 @@ public class Main {
             String nombre;
             String descripcion = "";
             int historiasRelacionada;
-            List<String> nombreCampeones = new ArrayList<>();
             List<WebElement> elements;
 
             driver.get(href);
@@ -53,24 +52,12 @@ public class Main {
                 }
             }
 
-            elementos = driver.findElements(By.className("item_30l8"));
-
-            for (WebElement elemetoss : elementos) {
-                String textoH1 = elemetoss.getAttribute("href");
-                nombreCampeones.add(textoH1);
-            }
-
             elements = driver.findElements(By.className("item_3MaG"));
             historiasRelacionada = elements.size();
 
             System.out.println("Nombre: " + nombre);
             System.out.println("Descripción: " + descripcion);
             System.out.println("Número de historias relacionadas: " + historiasRelacionada);
-            if (!nombreCampeones.isEmpty()) {
-                System.out.println("Nombres de campeones: " + Arrays.toString(nombreCampeones.toArray()));
-            } else {
-                System.out.println("La lista de campeones está vacía.");
-            }
         }
 
         driver.quit(); // Mueve esta línea fuera del bucle for

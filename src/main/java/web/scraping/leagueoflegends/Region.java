@@ -1,5 +1,6 @@
 package web.scraping.leagueoflegends;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Region {
@@ -8,10 +9,10 @@ public class Region {
     private List<Campeon> campeones;
     private int historiasRelacionada;
 
-    public Region(String nombre, String descripcion, List<Campeon> campeones, int historiasRelacionada) {
+    public Region(String nombre, String descripcion, int historiasRelacionada) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.campeones = campeones;
+        this.campeones = new ArrayList<>();
         this.historiasRelacionada = historiasRelacionada;
     }
 
