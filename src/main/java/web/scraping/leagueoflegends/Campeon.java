@@ -11,9 +11,10 @@ public class Campeon {
     private String rol;
     private String raza;
     private List<Habilidad> habilidades;
-    private List<String> nombreDeAspectos;
+    private int numDeAspectos;
+    private String dificultad;
 
-    public Campeon(String nombre, String apodo, List<Campeon> campeonesConRelacion, String biografia, boolean aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, List<Habilidad> habilidades, List<String> nombreDeAspectos) {
+    public Campeon(String nombre, String apodo, List<Campeon> campeonesConRelacion, String biografia, boolean aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, List<Habilidad> habilidades, int numDeAspectos, String dificultad) {
         this.nombre = nombre;
         this.apodo = apodo;
         this.campeonesConRelacion = campeonesConRelacion;
@@ -23,7 +24,8 @@ public class Campeon {
         this.rol = rol;
         this.raza = raza;
         this.habilidades = habilidades;
-        this.nombreDeAspectos = nombreDeAspectos;
+        this.numDeAspectos = numDeAspectos;
+        this.dificultad = dificultad;
     }
 
     public String getNombre() {
@@ -98,11 +100,19 @@ public class Campeon {
         this.habilidades = habilidades;
     }
 
-    public List<String> getNombreDeAspectos() {
-        return nombreDeAspectos;
+    public int getnumDeAspectos() {
+        return numDeAspectos;
     }
 
-    public void setNombreDeAspectos(List<String> nombreDeAspectos) {
-        this.nombreDeAspectos = nombreDeAspectos;
+    public void setnumDeAspectos(int numDeAspectos) {
+        this.numDeAspectos = numDeAspectos;
+    }
+
+    public String getDificultad() {
+        return dificultad;
+    }
+
+    public void setDificultad(String dificultad) {
+        this.dificultad = dificultad;
     }
 }

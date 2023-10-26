@@ -1,17 +1,17 @@
 package web.scraping.leagueoflegends;
 public class Habilidad {
+    private String nombre;
     private boolean pasiva;
     private char asignacionDeTelca;
     private String descripcion;
     private String linkVideo;
-    private String dificultad;
 
-    public Habilidad(boolean pasiva, char asignacionDeTelca, String descripcion, String linkVideo, String dificultad) {
+    public Habilidad(String nombre, boolean pasiva, char asignacionDeTelca, String descripcion, String linkVideo) {
+        this.nombre = nombre;
         this.pasiva = pasiva;
         this.asignacionDeTelca = asignacionDeTelca;
         this.descripcion = descripcion;
         this.linkVideo = linkVideo;
-        this.dificultad = dificultad;
     }
 
     public boolean isPasiva() {
@@ -46,11 +46,11 @@ public class Habilidad {
         this.linkVideo = linkVideo;
     }
 
-    public String getDificultad() {
-        return dificultad;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setDificultad(String dificultad) {
-        this.dificultad = dificultad;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }
