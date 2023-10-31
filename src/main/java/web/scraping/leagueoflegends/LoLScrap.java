@@ -10,7 +10,10 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+
+/**
+ *
+ */
 
 public class LoLScrap {
     private int tiempo = 3000;
@@ -18,7 +21,6 @@ public class LoLScrap {
     private ArrayList<String> listaHrefsCampeones = new ArrayList<>();
     private ArrayList<Campeon> campeones = new ArrayList<>();
     private ArrayList<Region> regiones = new ArrayList<>();
-    private ArrayList<Habilidad> habilidades = new ArrayList<>();
 
     public void comezarElRobo() throws InterruptedException {
         System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
@@ -26,16 +28,16 @@ public class LoLScrap {
 
         WebDriver driver = new FirefoxDriver(options);
 
-        //listaHrefsCampeones.add("https://universe.leagueoflegends.com/es_ES/champion/ahri/");
-        //guardarHrefRegiones(driver);
-        //robarRegion(driver);
-        //guardarHrefCampeones(driver);
-        //robarCampeones(driver);
-        robarHabilidad(driver, "https://www.leagueoflegends.com/es-es/champions/ahri/");
+        guardarHrefRegiones(driver);
+        robarRegion(driver);
+        guardarHrefCampeones(driver);
+        robarCampeones(driver);
+        meterCampeonesEnReiones(regiones,campeones);
+        crearCSV();
+        crearXML();
 
         driver.quit();
     }
-
     private void guardarHrefRegiones (WebDriver driver) throws InterruptedException {
         driver.get("https://universe.leagueoflegends.com/es_ES/regions/");
         Thread.sleep(tiempo);
@@ -52,7 +54,6 @@ public class LoLScrap {
             System.out.println("Contenido de href: " + href);
         }
     }
-
     private void guardarHrefCampeones (WebDriver driver) throws InterruptedException {
         driver.get("https://universe.leagueoflegends.com/es_ES/champions/");
         Thread.sleep(tiempo);
@@ -69,7 +70,6 @@ public class LoLScrap {
             System.out.println("Contenido de href: " + href);
         }
     }
-
     private void robarRegion(WebDriver driver) throws InterruptedException {
 
         for (String href : listaHrefsRegiones) {
@@ -215,9 +215,10 @@ public class LoLScrap {
             System.out.println("Dificultad del campeon: " + dificultad);
 
             habilidades = robarHabilidad(driver, campHref);
+            Campeon campeon = new Campeon(nombre,apodo,campeonesConRelacion,biografia,aparicionEnCinematicas,numRelatosCortos,rol,raza, region, habilidades,numDeAspectos,dificultad);
+            campeones.add(campeon);
         }
     }
-
     private List<Habilidad> robarHabilidad(WebDriver driver, String href) throws InterruptedException {
         List<Habilidad> habilidades = new ArrayList<>();
         driver.get(href);
@@ -266,5 +267,20 @@ public class LoLScrap {
             habilidades.add(habilidad);
         }
         return habilidades;
+    }
+    private void meterCampeonesEnReiones(List<Region> regiones, List<Campeon> campeones){
+        for (Campeon campeon : campeones){
+            for (int i = 0; i < regiones.size(); i++) {
+                if (campeon.getRegion().equalsIgnoreCase(regiones.get(i).getNombre())){
+                    regiones.get(i).getCampeones().add(campeon);
+                }
+            }
+        }
+    }
+    private void crearCSV(){
+
+    }
+    private void crearXML(){
+
     }
 }

@@ -1,20 +1,22 @@
 package web.scraping.leagueoflegends;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Campeon {
     private String nombre;
     private String apodo;
-    private List<Campeon> campeonesConRelacion;
-    private String biografia;
+    private List<String> campeonesConRelacion = new ArrayList<>();
+    private String biografia = "";
     private boolean aparicionEnCinematicas;
     private int numRelatosCortos;
     private String rol;
     private String raza;
+    private String region;
     private List<Habilidad> habilidades;
     private int numDeAspectos;
     private String dificultad;
 
-    public Campeon(String nombre, String apodo, List<Campeon> campeonesConRelacion, String biografia, boolean aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, List<Habilidad> habilidades, int numDeAspectos, String dificultad) {
+    public Campeon(String nombre, String apodo, List<String> campeonesConRelacion, String biografia, boolean aparicionEnCinematicas, int numRelatosCortos, String rol, String raza, String region, List<Habilidad> habilidades, int numDeAspectos, String dificultad) {
         this.nombre = nombre;
         this.apodo = apodo;
         this.campeonesConRelacion = campeonesConRelacion;
@@ -23,6 +25,7 @@ public class Campeon {
         this.numRelatosCortos = numRelatosCortos;
         this.rol = rol;
         this.raza = raza;
+        this.region = region;
         this.habilidades = habilidades;
         this.numDeAspectos = numDeAspectos;
         this.dificultad = dificultad;
@@ -44,11 +47,11 @@ public class Campeon {
         this.apodo = apodo;
     }
 
-    public List<Campeon> getCampeonesConRelacion() {
+    public List<String> getCampeonesConRelacion() {
         return campeonesConRelacion;
     }
 
-    public void setCampeonesConRelacion(List<Campeon> campeonesConRelacion) {
+    public void setCampeonesConRelacion(List<String> campeonesConRelacion) {
         this.campeonesConRelacion = campeonesConRelacion;
     }
 
@@ -60,7 +63,7 @@ public class Campeon {
         this.biografia = biografia;
     }
 
-    public boolean getAparicionEnCinematicas() {
+    public boolean isAparicionEnCinematicas() {
         return aparicionEnCinematicas;
     }
 
@@ -92,6 +95,14 @@ public class Campeon {
         this.raza = raza;
     }
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
     public List<Habilidad> getHabilidades() {
         return habilidades;
     }
@@ -100,11 +111,11 @@ public class Campeon {
         this.habilidades = habilidades;
     }
 
-    public int getnumDeAspectos() {
+    public int getNumDeAspectos() {
         return numDeAspectos;
     }
 
-    public void setnumDeAspectos(int numDeAspectos) {
+    public void setNumDeAspectos(int numDeAspectos) {
         this.numDeAspectos = numDeAspectos;
     }
 
