@@ -1,5 +1,14 @@
 package web.scraping.leagueoflegends;
 
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -8,6 +17,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +31,9 @@ public class LoLScrap {
     private ArrayList<String> listaHrefsCampeones = new ArrayList<>();
     private ArrayList<Campeon> campeones = new ArrayList<>();
     private ArrayList<Region> regiones = new ArrayList<>();
+    private Region regio = new Region("Runaterra","Esto no es una region como tal ya que es todo el continete donde estan las regiones del juego y el sitio donde Riot pone a los campeones que no tiene una region definida.",0);
 
-    public void comezarElRobo() throws InterruptedException {
+    public void comezarElRobo() throws InterruptedException, ParserConfigurationException, TransformerException {
         System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
         FirefoxOptions options = new FirefoxOptions();
 
@@ -71,6 +82,7 @@ public class LoLScrap {
         }
     }
     private void robarRegion(WebDriver driver) throws InterruptedException {
+        regiones.add(regio);
 
         for (String href : listaHrefsRegiones) {
             String nombre;
@@ -280,7 +292,121 @@ public class LoLScrap {
     private void crearCSV(){
 
     }
-    private void crearXML(){
+    private void crearXML() throws ParserConfigurationException, TransformerException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document document = dBuilder.newDocument();
 
+        Node rootNode = document.createElement("regiones");
+        document.appendChild(rootNode);
+
+        for (Region region : regiones){
+            Node regionNode = document.createElement("region");
+            rootNode.appendChild(regionNode);
+
+            Node nombreRegion = document.createElement("Nombre");
+            nombreRegion.appendChild(document.createTextNode(region.getNombre()));
+            regionNode.appendChild(nombreRegion);
+
+            Node descripcionRegion = document.createElement("Descripcion");
+            descripcionRegion.appendChild(document.createTextNode(region.getDescripcion()));
+            regionNode.appendChild(descripcionRegion);
+
+            Node campeonesNode = document.createElement("campeones");
+            regionNode.appendChild(campeonesNode);
+            for (Campeon campeon : region.getCampeones()){
+                Node campeonNode = document.createElement("campeon");
+                campeonesNode.appendChild(campeonNode);
+
+                Node nombreCampeon = document.createElement("Nombre");
+                nombreCampeon.appendChild(document.createTextNode(campeon.getNombre()));
+                campeonNode.appendChild(nombreCampeon);
+
+                Node apodoCampeon = document.createElement("Apodo");
+                apodoCampeon.appendChild(document.createTextNode(campeon.getApodo()));
+                campeonNode.appendChild(apodoCampeon);
+
+                Node campeonesConRelacionNode = document.createElement("CampeonesConRelacion");
+                campeonNode.appendChild(campeonesConRelacionNode);
+                for (String string : campeon.getCampeonesConRelacion()){
+                    Node campeonConRelacionNode = document.createElement("CampeonConRelacion");
+                    campeonConRelacionNode.appendChild(document.createTextNode(string));
+                    campeonesConRelacionNode.appendChild(campeonConRelacionNode);
+                }
+
+                Node biografiaCampeon = document.createElement("Biografia");
+                biografiaCampeon.appendChild(document.createTextNode(campeon.getBiografia()));
+                campeonNode.appendChild(biografiaCampeon);
+
+                Node aparicionEnCinematicasCampeon = document.createElement("AparicionEnCinematicas");
+                aparicionEnCinematicasCampeon.appendChild(document.createTextNode(String.valueOf(campeon.isAparicionEnCinematicas())));
+                campeonNode.appendChild(aparicionEnCinematicasCampeon);
+
+                Node numRelatosCortosCampeon = document.createElement("NumRelatosCortos");
+                numRelatosCortosCampeon.appendChild(document.createTextNode(String.valueOf(campeon.getNumRelatosCortos())));
+                campeonNode.appendChild(numRelatosCortosCampeon);
+
+                Node rolCampeon = document.createElement("Rol");
+                rolCampeon.appendChild(document.createTextNode(campeon.getRol()));
+                campeonNode.appendChild(rolCampeon);
+
+                Node razaCampeon = document.createElement("Raza");
+                razaCampeon.appendChild(document.createTextNode(campeon.getRaza()));
+                campeonNode.appendChild(razaCampeon);
+
+                Node regionCampeon = document.createElement("Region");
+                regionCampeon.appendChild(document.createTextNode(campeon.getRegion()));
+                campeonNode.appendChild(regionCampeon);
+
+                Node habilidadesCampeon = document.createElement("Habilidades");
+                campeonNode.appendChild(habilidadesCampeon);
+                for (Habilidad habilidad : campeon.getHabilidades()){
+                    Node habilidadCampeon = document.createElement("Habilidad");
+                    habilidadesCampeon.appendChild(habilidadCampeon);
+
+                    Node nombreHabilidad = document.createElement("Nombre");
+                    nombreHabilidad.appendChild(document.createTextNode(habilidad.getNombre()));
+                    habilidadCampeon.appendChild(nombreHabilidad);
+
+                    Node pasivaHabilidad = document.createElement("Pasiva");
+                    pasivaHabilidad.appendChild(document.createTextNode(String.valueOf(habilidad.isPasiva())));
+                    habilidadCampeon.appendChild(pasivaHabilidad);
+
+                    Node asignacionDeTelcaHabilidad = document.createElement("AsignacionDeTelca");
+                    asignacionDeTelcaHabilidad.appendChild(document.createTextNode(String.valueOf(habilidad.getAsignacionDeTelca())));
+                    habilidadCampeon.appendChild(asignacionDeTelcaHabilidad);
+
+                    Node descripcionHabilidad = document.createElement("Descripcion");
+                    descripcionHabilidad.appendChild(document.createTextNode(habilidad.getDescripcion()));
+                    habilidadCampeon.appendChild(descripcionHabilidad);
+
+                    Node linkVideoHabilidad = document.createElement("LinkVideo");
+                    linkVideoHabilidad.appendChild(document.createTextNode(habilidad.getLinkVideo()));
+                    habilidadCampeon.appendChild(linkVideoHabilidad);
+                }
+
+                Node numDeAspectosCampeon = document.createElement("NumDeAspectos");
+                numDeAspectosCampeon.appendChild(document.createTextNode(String.valueOf(campeon.getNumDeAspectos())));
+                campeonNode.appendChild(numDeAspectosCampeon);
+
+                Node dificultadCampeon = document.createElement("Dificultad");
+                dificultadCampeon.appendChild(document.createTextNode(campeon.getDificultad()));
+                campeonNode.appendChild(dificultadCampeon);
+            }
+
+            Node historiasRelacionadaRegion = document.createElement("HistoriasRelacionada");
+            historiasRelacionadaRegion.appendChild(document.createTextNode(String.valueOf(region.getHistoriasRelacionada())));
+            regionNode.appendChild(historiasRelacionadaRegion);
+        }
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(new File("LoLWebScraping.xml"));
+        transformer.transform(source, result);
+
+        System.out.println("Archivo XML creado correctamente.");
     }
 }
