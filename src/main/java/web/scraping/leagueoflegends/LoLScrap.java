@@ -265,9 +265,13 @@ public class LoLScrap {
             }
             nombre = element.findElement(By.tagName("h5")).getText();
             descripcion = element.findElement(By.tagName("p")).getText();
-            element = driver.findElement(By.cssSelector("video[data-testid='" + contenidoVideo + "']"));
-            element = element.findElement(By.cssSelector("source[type='video/mp4']"));
-            linkVideo = element.getAttribute("src");
+            if (nombre.equalsIgnoreCase("Sistema de cola de armas")){
+                linkVideo = "null";
+            }else {
+                element = driver.findElement(By.cssSelector("video[data-testid='" + contenidoVideo + "']"));
+                element = element.findElement(By.cssSelector("source[type='video/mp4']"));
+                linkVideo = element.getAttribute("src");
+            }
 
             System.out.println("Nombre: " + nombre);
             System.out.println("Pasiva: " + pasiva);
