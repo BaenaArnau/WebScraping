@@ -108,7 +108,7 @@ public class LoLScrap {
                 elements = element.findElements(By.tagName("p"));
                 for (WebElement elemetoss : elements) {
 
-                    descripcion += elemetoss.getText() + "\n";
+                    descripcion += elemetoss.getText() + " ";
                 }
             }
 
@@ -125,7 +125,7 @@ public class LoLScrap {
     }
     private void robarCampeones(WebDriver driver) throws InterruptedException {
 
-        for (String href : listaHrefsCampeones){
+        for (String href : listaHrefsCampeones) {
             String nombre;
             String apodo;
             List<String> campeonesConRelacion = new ArrayList<>();
@@ -150,16 +150,16 @@ public class LoLScrap {
             apodo = element.getText();
 
             List<WebElement> elements = driver.findElements(By.className("champion_1xlO"));
-            for (WebElement elemento : elements){
+            for (WebElement elemento : elements) {
                 elemento = elemento.findElement(By.tagName("div"));
                 elemento = elemento.findElement(By.tagName("h5"));
                 campeonesConRelacion.add(elemento.getText());
             }
 
             elements = driver.findElements(By.className("race_3k58"));
-            if (!elements.isEmpty()){
+            if (!elements.isEmpty()) {
                 raza = elements.get(0).findElement(By.tagName("h6")).getText();
-            }else {
+            } else {
                 raza = "Desconocida";
             }
 
@@ -171,9 +171,9 @@ public class LoLScrap {
             numRelatosCortos = elements.size();
 
 
-            if (nombre.equalsIgnoreCase("Malphite") | nombre.equalsIgnoreCase("Qiyana") | nombre.equalsIgnoreCase("Milio") | nombre.equalsIgnoreCase("Neeko") | nombre.equalsIgnoreCase("Nidalee") | nombre.equalsIgnoreCase("Rengar") | nombre.equalsIgnoreCase("Zyra")){
+            if (nombre.equalsIgnoreCase("Malphite") | nombre.equalsIgnoreCase("Qiyana") | nombre.equalsIgnoreCase("Milio") | nombre.equalsIgnoreCase("Neeko") | nombre.equalsIgnoreCase("Nidalee") | nombre.equalsIgnoreCase("Rengar") | nombre.equalsIgnoreCase("Zyra")) {
                 region = "Ixtal";
-            }else {
+            } else {
                 element = driver.findElement(By.className("factionText_EnRL"));
                 element = element.findElement(By.tagName("h6"));
                 region = element.findElement(By.tagName("span")).getText();
@@ -181,9 +181,9 @@ public class LoLScrap {
 
 
             elements = driver.findElements(By.className("top__0Tf"));
-            if (!elements.isEmpty()){
+            if (!elements.isEmpty()) {
                 aparicionEnCinematicas = true;
-            }else {
+            } else {
                 aparicionEnCinematicas = false;
             }
 
@@ -198,16 +198,14 @@ public class LoLScrap {
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
             element = driver.findElement(By.id("CatchElement"));
             elements = element.findElements(By.tagName("p"));
-            for (WebElement elemento : elements){
-                biografia += elemento.getText() + "\n";
+            for (WebElement elemento : elements) {
+                biografia += elemento.getText() + " ";
             }
 
             driver.get(href);
             Thread.sleep(tiempo);
 
-            element = driver.findElement(By.className("gameInfo_1HtZ"));
-            element = element.findElement(By.tagName("a"));
-            campHref = element.getAttribute("href");
+            campHref = "https://www.leagueoflegends.com/es-es/champions/" + nombre.toLowerCase() + "/";
 
             driver.get(campHref);
             Thread.sleep(tiempo);
@@ -298,7 +296,54 @@ public class LoLScrap {
             for (Region region : regiones){
                 writer.write(region.getNombre());
                 writer.write(",");
+                writer.write(region.getDescripcion());
+                writer.write(",");
+                for (Campeon campeon : region.getCampeones()){
+                    writer.write("(");
+                    writer.write(campeon.getNombre());
+                    writer.write(",");
+                    writer.write(campeon.getApodo());
+                    writer.write(",");
+                    for (String string : campeon.getCampeonesConRelacion()){
+                        writer.write("(");
+                        writer.write(string);
+                        writer.write("),");
+                    }
+                    writer.write(campeon.getBiografia());
+                    writer.write(",");
+                    writer.write(String.valueOf(campeon.isAparicionEnCinematicas()));
+                    writer.write(",");
+                    writer.write(String.valueOf(campeon.getNumRelatosCortos()));
+                    writer.write(",");
+                    writer.write(campeon.getRol());
+                    writer.write(",");
+                    writer.write(campeon.getRaza());
+                    writer.write(",");
+                    writer.write(campeon.getRegion());
+                    writer.write(",");
+                    for (Habilidad habilidad : campeon.getHabilidades()){
+                        writer.write("(");
+                        writer.write(habilidad.getNombre());
+                        writer.write(",");
+                        writer.write(String.valueOf(habilidad.isPasiva()));
+                        writer.write(",");
+                        writer.write(String.valueOf(habilidad.getAsignacionDeTelca()));
+                        writer.write(",");
+                        writer.write(habilidad.getDescripcion());
+                        writer.write(",");
+                        writer.write(habilidad.getLinkVideo());
+                        writer.write("),");
+                    }
+                    writer.write(String.valueOf(campeon.getNumDeAspectos()));
+                    writer.write(",");
+                    writer.write(campeon.getDificultad());
+                    writer.write("),");
+                }
+                writer.write(region.getHistoriasRelacionada());
+                writer.newLine();
             }
+            writer.close();
+            System.out.println("Archivo CSV creado correctamente.");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
