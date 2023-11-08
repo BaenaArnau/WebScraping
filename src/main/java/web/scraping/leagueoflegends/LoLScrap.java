@@ -1,5 +1,6 @@
 package web.scraping.leagueoflegends;
 
+import com.opencsv.CSVWriter;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,7 +18,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -290,7 +294,14 @@ public class LoLScrap {
         }
     }
     private void crearCSV(){
-
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File("LoLWebScraping.csv")))){
+            for (Region region : regiones){
+                writer.write(region.getNombre());
+                writer.write(",");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     private void crearXML() throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
