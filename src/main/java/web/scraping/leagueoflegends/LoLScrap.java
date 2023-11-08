@@ -205,7 +205,11 @@ public class LoLScrap {
             driver.get(href);
             Thread.sleep(tiempo);
 
-            campHref = "https://www.leagueoflegends.com/es-es/champions/" + nombre.toLowerCase() + "/";
+            if (nombre.equalsIgnoreCase("Aatrox")){
+                campHref = "https://www.leagueoflegends.com/en-us/champions/aatrox/";
+            }else {
+                campHref = "https://www.leagueoflegends.com/es-es/champions/" + nombre.toLowerCase() + "/";
+            }
 
             driver.get(campHref);
             Thread.sleep(tiempo);
@@ -253,8 +257,8 @@ public class LoLScrap {
             acciones.moveToElement(boton).click().perform();
             Thread.sleep(tiempo);
 
-            WebElement element = driver.findElement(By.cssSelector("li.style__AbilityInfoItem-sc-1bu2ash-8.lGkNU.is-active[data-testid='" + contenidoHabilidad + "']"));
 
+            WebElement element = driver.findElement(By.cssSelector("li.style__AbilityInfoItem-sc-1bu2ash-8.lGkNU.is-active[data-testid='" + contenidoHabilidad + "']"));
 
             if (i == 0){
                 pasiva = true;
