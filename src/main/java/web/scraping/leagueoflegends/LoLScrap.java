@@ -214,6 +214,8 @@ public class LoLScrap {
                 nombre = "Bard";
             } else if (nombre.equalsIgnoreCase("Dr. Mundo")) {
                 nombre = "dr-mundo";
+            } else if (nombre.equalsIgnoreCase("Maestro Yi")) {
+                nombre = "master-yi";
             } else if (nombre.contains(" ")) {
                 nombre = nombre.replace(" ","-");
             }
