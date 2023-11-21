@@ -216,6 +216,10 @@ public class LoLScrap {
                 nombre = "dr-mundo";
             } else if (nombre.equalsIgnoreCase("Maestro Yi")) {
                 nombre = "master-yi";
+            } else if (nombre.equalsIgnoreCase("Nunu y Willump")) {
+                nombre = "nunu";
+            } else if (nombre.equalsIgnoreCase("Renata Glasc")) {
+                nombre = "renata";
             } else if (nombre.contains(" ")) {
                 nombre = nombre.replace(" ","-");
             }
