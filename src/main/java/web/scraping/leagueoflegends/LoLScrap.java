@@ -2,14 +2,12 @@ package web.scraping.leagueoflegends;
 
 import com.opencsv.CSVWriter;
 import org.w3c.dom.*;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -17,27 +15,59 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
-
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
- *
+ * Clase de control para efectuar el WebScraping de la pagina del LoL
  */
-
 public class LoLScrap {
+
+    /**
+     * El tiempo que tarda en seguir el codigo cada vez que cambia de pagina
+     */
     public int tiempo = 3000;
+
+    /**
+     * Esta lista nos permitira guardar los links de las regiones
+     */
     private ArrayList<String> listaHrefsRegiones = new ArrayList<>();
+
+    /**
+     * Esta lista nos permitira guardar los links de los campeones
+     */
     private ArrayList<String> listaHrefsCampeones = new ArrayList<>();
+
+    /**
+     * Esta lista nos permitira guardar los campeones que scrapeamos
+     */
     private ArrayList<Campeon> campeones = new ArrayList<>();
+
+    /**
+     * Esta lista nos permitira guardar las regiones que scrapeamos
+     */
     private ArrayList<Region> regiones = new ArrayList<>();
+
+    /**
+     * Esta lista nos permitira guardar las habilidades que scrapeamos
+     */
+    List<Habilidad> habilidades = new ArrayList<>();
+
+    /**
+     * Esta region es la region por defecto del LoL que en verdad es todo el mundo del lol pero no sale omo tal en la pagina
+     */
     private Region regio = new Region("Runaterra","Esto no es una region como tal ya que es todo el continete donde estan las regiones del juego y el sitio donde Riot pone a los campeones que no tiene una region definida.",0);
 
+    /**
+     * Inicia el proceso de web scraping de datos de League of Legends.
+     *
+     * @throws InterruptedException          si el hilo se interrumpe durante la espera.
+     * @throws ParserConfigurationException si no se puede crear un DocumentBuilder.
+     * @throws TransformerException         si ocurre un error durante la transformación XML.
+     */
     public void comezarElRobo() throws InterruptedException, ParserConfigurationException, TransformerException {
         System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
         FirefoxOptions options = new FirefoxOptions();
@@ -47,7 +77,6 @@ public class LoLScrap {
         guardarHrefRegiones(driver);
         robarRegion(driver);
         guardarHrefCampeones(driver);
-        //listaHrefsCampeones.add("https://universe.leagueoflegends.com/es_ES/champion/hecarim/");
         robarCampeones(driver);
         meterCampeonesEnReiones(regiones,campeones);
         crearCSV();
@@ -55,6 +84,13 @@ public class LoLScrap {
 
         driver.quit();
     }
+
+    /**
+     * Guarda los hrefs de las regiones desde el sitio web del universo de League of Legends.
+     *
+     * @param driver el WebDriver para la automatización del navegador.
+     * @throws InterruptedException si el hilo se interrumpe durante la espera.
+     */
     private void guardarHrefRegiones (WebDriver driver) throws InterruptedException {
         driver.get("https://universe.leagueoflegends.com/es_ES/regions/");
         Thread.sleep(tiempo);
@@ -66,11 +102,14 @@ public class LoLScrap {
             String href = elemento.getAttribute("href");
             listaHrefsRegiones.add(href);
         }
-
-        //for (String href : listaHrefsRegiones) {
-        //    System.out.println("Contenido de href: " + href);
-        //}
     }
+
+    /**
+     * Guarda los hrefs de los campeones desde el sitio web del universo de League of Legends.
+     *
+     * @param driver el WebDriver para la automatización del navegador.
+     * @throws InterruptedException si el hilo se interrumpe durante la espera.
+     */
     private void guardarHrefCampeones (WebDriver driver) throws InterruptedException {
         driver.get("https://universe.leagueoflegends.com/es_ES/champions/");
         Thread.sleep(tiempo);
@@ -82,11 +121,13 @@ public class LoLScrap {
             String href = elemento.findElement(By.tagName("a")).getAttribute("href");
             listaHrefsCampeones.add(href);
         }
-
-        //for (String href : listaHrefsCampeones) {
-        //    System.out.println("Contenido de href: " + href);
-        //}
     }
+    /**
+     * Obtiene información sobre las regiones desde el sitio web del universo de League of Legends.
+     *
+     * @param driver el WebDriver para la automatización del navegador.
+     * @throws InterruptedException si el hilo se interrumpe durante la espera.
+     */
     private void robarRegion(WebDriver driver) throws InterruptedException {
         regiones.add(regio);
 
@@ -117,14 +158,17 @@ public class LoLScrap {
             elements = driver.findElements(By.className("item_3MaG"));
             historiasRelacionada = elements.size();
 
-            System.out.println("Nombre: " + nombre);
-            System.out.println("Descripción: " + descripcion);
-            System.out.println("Número de historias relacionadas: " + historiasRelacionada);
-
             Region region = new Region(nombre, descripcion, historiasRelacionada);
             regiones.add(region);
         }
     }
+
+    /**
+     * Obtiene información sobre los campeones desde el sitio web del universo de League of Legends.
+     *
+     * @param driver el WebDriver para la automatización del navegador.
+     * @throws InterruptedException si el hilo se interrumpe durante la espera.
+     */
     private void robarCampeones(WebDriver driver) throws InterruptedException {
 
         for (String href : listaHrefsCampeones) {
@@ -141,6 +185,7 @@ public class LoLScrap {
             int numDeAspectos;
             String dificultad;
             String campHref;
+            String nombreToHref;
 
             driver.get(href);
             Thread.sleep(tiempo);
@@ -209,50 +254,51 @@ public class LoLScrap {
 
 
             if (nombre.contains("'")){
-                nombre = nombre.replace("'","-");
+                nombreToHref = nombre.replace("'","-");
             } else if (nombre.equalsIgnoreCase("Bardo")) {
-                nombre = "Bard";
+                nombreToHref = "Bard";
             } else if (nombre.equalsIgnoreCase("Dr. Mundo")) {
-                nombre = "dr-mundo";
+                nombreToHref = "Dr-mundo";
             } else if (nombre.equalsIgnoreCase("Maestro Yi")) {
-                nombre = "master-yi";
+                nombreToHref = "Master-yi";
             } else if (nombre.equalsIgnoreCase("Nunu y Willump")) {
-                nombre = "nunu";
+                nombreToHref = "Nunu";
             } else if (nombre.equalsIgnoreCase("Renata Glasc")) {
-                nombre = "renata";
+                nombreToHref = "Renata";
             } else if (nombre.contains(" ")) {
-                nombre = nombre.replace(" ","-");
+                nombreToHref = nombre.replace(" ","-");
+            }else {
+                nombreToHref = nombre;
             }
-            campHref = "https://www.leagueoflegends.com/es-es/champions/" + nombre.toLowerCase() + "/";
+            if (!nombre.equalsIgnoreCase("Hwei")){
+                campHref = "https://www.leagueoflegends.com/es-es/champions/" + nombreToHref.toLowerCase() + "/";
 
-            driver.get(campHref);
-            Thread.sleep(tiempo);
+                driver.get(campHref);
+                Thread.sleep(tiempo);
 
-            elements = driver.findElements(By.className("style__CarouselItemText-sc-gky2mu-16"));
-            numDeAspectos = elements.size();
+                elements = driver.findElements(By.className("style__CarouselItemText-sc-gky2mu-16"));
+                numDeAspectos = elements.size();
 
-            element = driver.findElement(By.cssSelector("div[data-testid='overview:difficulty']"));
-            dificultad = element.getText();
+                element = driver.findElement(By.cssSelector("div[data-testid='overview:difficulty']"));
+                dificultad = element.getText();
 
-            System.out.println("Nombre: " + nombre);
-            System.out.println("Apodo: " + apodo);
-            System.out.println("Campeones Relacionados: " + campeonesConRelacion.size());
-            System.out.println("Biografía: " + biografia);
-            System.out.println("Aparición en Cinemáticas: " + aparicionEnCinematicas);
-            System.out.println("Número de Relatos Cortos: " + numRelatosCortos);
-            System.out.println("Rol: " + rol);
-            System.out.println("Raza: " + raza);
-            System.out.println("Región: " + region);
-            System.out.println("Numero de aspectos: " + numDeAspectos);
-            System.out.println("Dificultad del campeon: " + dificultad);
-
-            habilidades = robarHabilidad(driver, campHref);
-            Campeon campeon = new Campeon(nombre,apodo,campeonesConRelacion,biografia,aparicionEnCinematicas,numRelatosCortos,rol,raza, region, habilidades,numDeAspectos,dificultad);
-            campeones.add(campeon);
+                habilidades = robarHabilidad(driver, campHref, nombre);
+                Campeon campeon = new Campeon(nombre,apodo,campeonesConRelacion.size(),biografia,aparicionEnCinematicas,numRelatosCortos,rol,raza, region, habilidades,numDeAspectos,dificultad);
+                campeones.add(campeon);
+            }
         }
     }
-    private List<Habilidad> robarHabilidad(WebDriver driver, String href) throws InterruptedException {
-        List<Habilidad> habilidades = new ArrayList<>();
+
+    /**
+     * Obtiene información sobre las habilidades de un campeón desde el sitio web del universo de League of Legends.
+     *
+     * @param driver el WebDriver para la automatización del navegador.
+     * @param href   la URL de la página del campeón.
+     * @return una lista de habilidades para el campeón.
+     * @throws InterruptedException si el hilo se interrumpe durante la espera.
+     */
+    private List<Habilidad> robarHabilidad(WebDriver driver, String href, String campeon) throws InterruptedException {
+        List<Habilidad> habilidadesDeCampeon = new ArrayList<>();
         driver.get(href);
         Thread.sleep(tiempo);
         for (int i = 0; i < 5; i++) {
@@ -297,19 +343,19 @@ public class LoLScrap {
                 linkVideo = null;
             }
 
-            System.out.println("Nombre: " + nombre);
-            System.out.println("Pasiva: " + pasiva);
-            System.out.println("Asignación de Tecla: " + asignacionDeTelca);
-            System.out.println("Descripción: " + descripcion);
-            System.out.println("Link de Video: " + linkVideo);
-
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-
-            Habilidad habilidad = new Habilidad(nombre,pasiva,asignacionDeTelca,descripcion,linkVideo);
+            Habilidad habilidad = new Habilidad(campeon,nombre,pasiva,asignacionDeTelca,descripcion,linkVideo);
+            habilidadesDeCampeon.add(habilidad);
             habilidades.add(habilidad);
         }
-        return habilidades;
+        return habilidadesDeCampeon;
     }
+
+    /**
+     * Asocia los campeones con sus respectivas regiones.
+     *
+     * @param regiones   una lista de regiones.
+     * @param campeones  una lista de campeones.
+     */
     private void meterCampeonesEnReiones(List<Region> regiones, List<Campeon> campeones){
         for (Campeon campeon : campeones){
             for (int i = 0; i < regiones.size(); i++) {
@@ -319,50 +365,46 @@ public class LoLScrap {
             }
         }
     }
+
+    /**
+     * Crea archivos CSV con los datos obtenidos de cada clase.
+     */
     private void crearCSV() {
-        try (CSVWriter writer = new CSVWriter(new FileWriter("LoLWebScraping.csv"))) {
+        try (CSVWriter writerRegion = new CSVWriter(new FileWriter("Regiones.csv"))) {
+            writerRegion.writeNext(new String[]{"nombre,descripcion,historiasRelacionada"});
             for (Region region : regiones) {
-                String[] regionData = {region.getNombre(), region.getDescripcion()};
-
-                for (Campeon campeon : region.getCampeones()) {
-                    String[] campeonData = {
-                            campeon.getNombre(), campeon.getApodo(),
-                            String.join(",", campeon.getCampeonesConRelacion()),
-                            campeon.getBiografia(),
-                            String.valueOf(campeon.isAparicionEnCinematicas()),
-                            String.valueOf(campeon.getNumRelatosCortos()),
-                            campeon.getRol(),
-                            campeon.getRaza(),
-                            campeon.getRegion()
-                    };
-
-                    for (Habilidad habilidad : campeon.getHabilidades()) {
-                        String[] habilidadData = {
-                                habilidad.getNombre(),
-                                String.valueOf(habilidad.isPasiva()),
-                                String.valueOf(habilidad.getAsignacionDeTelca()),
-                                habilidad.getDescripcion(),
-                                habilidad.getLinkVideo()
-                        };
-                        writer.writeNext(habilidadData);
-                    }
-                    String[] aspectoData = {
-                            String.valueOf(campeon.getNumDeAspectos()),
-                            campeon.getDificultad()
-                    };
-                    writer.writeNext(regionData);
-                    writer.writeNext(campeonData);
-                    writer.writeNext(aspectoData);
-                }
-                String[] historiasRelacionadaData = {String.valueOf(region.getHistoriasRelacionada())};
-                writer.writeNext(historiasRelacionadaData);
+                writerRegion.writeNext(new String[]{region.toString()});
             }
-
-            System.out.println("Archivo CSV creado correctamente.");
+            System.out.println("Archivo CSV de regiones se ha creado correctamente.");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        }
+        try (CSVWriter writerCampeones = new CSVWriter(new FileWriter("Campeons.csv"))) {
+            writerCampeones.writeNext(new String[]{"region,nombre,apodo,campeonesConRelacion,biografia,aparicionEnCinematicas,numRelatosCortos,rol,raza,numDeAspectos,dificultad"});
+            for (Campeon campeon : campeones) {
+                writerCampeones.writeNext(new String[]{campeon.toString()});
+            }
+            System.out.println("Archivo CSV de campeones se ha creado correctamente.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (CSVWriter writerHabilidad = new CSVWriter(new FileWriter("Habilidades.csv"))) {
+            writerHabilidad.writeNext(new String[]{"campeon,nombre,pasiva,asignacionDeTecla,descripcion,linkVideo"});
+            for (Habilidad habilidad : habilidades) {
+                writerHabilidad.writeNext(new String[]{habilidad.toString()});
+            }
+            System.out.println("Archivo CSV de habilidades se ha creado correctamente.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    /**
+     * Crea un archivo XML con los datos obtenidos.
+     *
+     * @throws ParserConfigurationException si no se puede crear un DocumentBuilder.
+     * @throws TransformerException         si ocurre un error durante la transformación XML.
+     */
     private void crearXML() throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -398,12 +440,8 @@ public class LoLScrap {
                 campeonNode.appendChild(apodoCampeon);
 
                 Node campeonesConRelacionNode = document.createElement("CampeonesConRelacion");
+                campeonesConRelacionNode.appendChild(document.createTextNode(String.valueOf(campeon.getCampeonesConRelacion())));
                 campeonNode.appendChild(campeonesConRelacionNode);
-                for (String string : campeon.getCampeonesConRelacion()){
-                    Node campeonConRelacionNode = document.createElement("CampeonConRelacion");
-                    campeonConRelacionNode.appendChild(document.createTextNode(string));
-                    campeonesConRelacionNode.appendChild(campeonConRelacionNode);
-                }
 
                 Node biografiaCampeon = document.createElement("Biografia");
                 biografiaCampeon.appendChild(document.createTextNode(campeon.getBiografia()));
@@ -444,7 +482,7 @@ public class LoLScrap {
                     habilidadCampeon.appendChild(pasivaHabilidad);
 
                     Node asignacionDeTelcaHabilidad = document.createElement("AsignacionDeTelca");
-                    asignacionDeTelcaHabilidad.appendChild(document.createTextNode(String.valueOf(habilidad.getAsignacionDeTelca())));
+                    asignacionDeTelcaHabilidad.appendChild(document.createTextNode(String.valueOf(habilidad.getAsignacionDeTecla())));
                     habilidadCampeon.appendChild(asignacionDeTelcaHabilidad);
 
                     Node descripcionHabilidad = document.createElement("Descripcion");
