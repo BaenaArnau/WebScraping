@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"web.scraping.leagueoflegends","l":"Campeon"},{"p":"web.scraping.leagueoflegends","l":"Habilidad"},{"p":"web.scraping.leagueoflegends","l":"LoLScrap"},{"p":"web.scraping.leagueoflegends","l":"Main"},{"p":"web.scraping.leagueoflegends","l":"Region"}];updateSearchResults();
