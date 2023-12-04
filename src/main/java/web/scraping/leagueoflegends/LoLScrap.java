@@ -371,27 +371,27 @@ public class LoLScrap {
      */
     private void crearCSV() {
         try (CSVWriter writerRegion = new CSVWriter(new FileWriter("Regiones.csv"))) {
-            writerRegion.writeNext(new String[]{"nombre,descripcion,historiasRelacionada"});
+            writerRegion.writeNext(new String[]{"nombre","descripcion","historiasRelacionada"});
             for (Region region : regiones) {
-                writerRegion.writeNext(new String[]{region.toString()});
+                writerRegion.writeNext(new String[]{region.getNombre(),region.getDescripcion(),String.valueOf(regio.getHistoriasRelacionada())});
             }
             System.out.println("Archivo CSV de regiones se ha creado correctamente.");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try (CSVWriter writerCampeones = new CSVWriter(new FileWriter("Campeons.csv"))) {
-            writerCampeones.writeNext(new String[]{"region,nombre,apodo,campeonesConRelacion,biografia,aparicionEnCinematicas,numRelatosCortos,rol,raza,numDeAspectos,dificultad"});
+            writerCampeones.writeNext(new String[]{"region","nombre","apodo","campeonesConRelacion","biografia","aparicionEnCinematicas","numRelatosCortos","rol","raza","numDeAspectos","dificultad"});
             for (Campeon campeon : campeones) {
-                writerCampeones.writeNext(new String[]{campeon.toString()});
+                writerCampeones.writeNext(new String[]{campeon.getRegion(), campeon.getNombre(), campeon.getApodo(), String.valueOf(campeon.getCampeonesConRelacion()),campeon.getBiografia(),String.valueOf(campeon.isAparicionEnCinematicas()),String.valueOf(campeon.getNumRelatosCortos()),campeon.getRol(),campeon.getRaza(),String.valueOf(campeon.getNumDeAspectos()),campeon.getDificultad()});
             }
             System.out.println("Archivo CSV de campeones se ha creado correctamente.");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try (CSVWriter writerHabilidad = new CSVWriter(new FileWriter("Habilidades.csv"))) {
-            writerHabilidad.writeNext(new String[]{"campeon,nombre,pasiva,asignacionDeTecla,descripcion,linkVideo"});
+            writerHabilidad.writeNext(new String[]{"campeon","nombre","pasiva","asignacionDeTecla","descripcion","linkVideo"});
             for (Habilidad habilidad : habilidades) {
-                writerHabilidad.writeNext(new String[]{habilidad.toString()});
+                writerHabilidad.writeNext(new String[]{habilidad.getCampeon(),habilidad.getNombre(),String.valueOf(habilidad.isPasiva()),String.valueOf(habilidad.getAsignacionDeTecla()), habilidad.getDescripcion(), habilidad.getLinkVideo()});
             }
             System.out.println("Archivo CSV de habilidades se ha creado correctamente.");
         } catch (IOException e) {

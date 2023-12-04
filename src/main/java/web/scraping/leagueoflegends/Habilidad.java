@@ -123,12 +123,11 @@ public class Habilidad {
     }
 
     /**
-     * To string para poder pasarlo a CSV
+     * Obtiene el campeon de la habilidad.
      *
-     * @return Todas las variables dentro de la clase
+     * @return El campeon de la habilidad.
      */
-    @Override
-    public String toString() {
-        return campeon + "," + nombre + "," + pasiva + "," + asignacionDeTecla + "," + descripcion + "," + linkVideo;
+    public String getCampeon() {
+        return campeon;
     }
 }

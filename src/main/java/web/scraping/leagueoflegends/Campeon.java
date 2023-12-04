@@ -276,15 +276,4 @@ public class Campeon {
     public void setDificultad(String dificultad) {
         this.dificultad = dificultad;
     }
-
-    /**
-     * To string para poder pasarlo a CSV
-     *
-     * @return Todas las variables y listas dentro de la clase
-     */
-    @Override
-    public String toString() {
-
-        return region + "," + nombre + "," + apodo + "," + campeonesConRelacion + "," + biografia + "," + aparicionEnCinematicas + "," + numRelatosCortos + "," + rol + "," + raza + "," + numDeAspectos + "," + dificultad;
-    }
 }

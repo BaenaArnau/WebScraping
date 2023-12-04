@@ -104,18 +104,4 @@ public class Region {
     public int getHistoriasRelacionada() {
         return historiasRelacionada;
     }
-
-    /**
-     * To string para poder pasarlo a CSV
-     *
-     * @return Todas las variables y listas dentro de la clase
-     */
-    @Override
-    public String toString() {
-        String campeonesCSV = "";
-        for (Campeon campeon : campeones){
-            campeonesCSV = campeonesCSV + campeon.toString();
-        }
-        return nombre + "," + descripcion + "," + historiasRelacionada;
-    }
 }
